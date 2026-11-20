@@ -1,0 +1,107 @@
+// ===== Токены: тёмная — углеродная, светлая — «песок/титан». Акцент — сигнальный оранжевый Kospet =====
+$bp-md: 768px;
+$bp-lg: 1100px;
+@mixin up($w) { @media (min-width: $w) { @content; } }
+@mixin cut($c: 14px) { clip-path: polygon(0 0, calc(100% - #{$c}) 0, 100% $c, 100% 100%, $c 100%, 0 calc(100% - #{$c})); }
+
+:root, [data-theme='dark'] {
+  --bg: #0d0f12; --surface: #161a1f; --surface2: #1e242b; --line: #2a323b;
+  --text: #eef1f4; --muted: #8e99a5; --accent: #ff5a1f; --accent-ink: #0d0f12; --ok: #3ecf8e; --bad: #ff5d5d;
+}
+[data-theme='light'] {
+  --bg: #eef0f2; --surface: #ffffff; --surface2: #e3e6e9; --line: #cfd4d9;
+  --text: #14181c; --muted: #5d6874; --accent: #e8490f; --accent-ink: #ffffff; --ok: #12875a; --bad: #c62f2f;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body { font: 400 16px/1.55 'Barlow', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: background .25s, color .25s; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, .logo { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; line-height: 1.05; letter-spacing: .01em; }
+h1 { font-size: clamp(2.4rem, 7vw, 4.6rem); } h2 { font-size: 1.8rem; } h3 { font-size: 1.3rem; }
+a { color: inherit; } img { max-width: 100%; display: block; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+.wrap { width: min(1280px, 100% - 32px); margin-inline: auto; padding-block: 28px 56px; }
+.empty { padding: 64px 16px; text-align: center; color: var(--muted); a { color: var(--accent); } }
+.ok { color: var(--ok); } .no { color: var(--bad); }
+small { color: var(--muted); display: block; }
+
+// ----- шапка -----
+.top {
+  position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center;
+  padding: 12px max(16px, calc((100% - 1280px) / 2)); padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  .logo { font-size: 1.7rem; text-decoration: none; span { color: var(--accent); } }
+  nav { display: flex; gap: 6px; }
+  nav a, nav button { position: relative; display: grid; place-items: center; width: 44px; height: 44px; background: none; border: 0; cursor: pointer; color: var(--text); border-radius: 50%;
+    &:hover { background: var(--surface2); } &.active { color: var(--accent); }
+    b { position: absolute; top: 2px; right: 0; min-width: 18px; height: 18px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); font-size: 11px; display: grid; place-items: center; } }
+}
+.foot { padding: 28px 16px calc(28px + env(safe-area-inset-bottom, 0px)); text-align: center; color: var(--muted); border-top: 1px solid var(--line); font-size: .9rem; }
+
+// ----- кнопки -----
+.btn {
+  @include cut(10px); background: var(--accent); color: var(--accent-ink); border: 0; padding: 12px 22px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; transition: filter .15s, transform .1s;
+  &:hover:not(:disabled) { filter: brightness(1.1); } &:active:not(:disabled) { transform: translateY(1px); }
+  &:disabled { background: var(--surface2); color: var(--muted); cursor: not-allowed; }
+  &.big { padding: 15px 32px; font-size: 1.05rem; }
+  &.ghost { background: var(--surface2); color: var(--text); &.on { color: var(--accent); } &.danger:hover { color: var(--bad); } }
+}
+
+// ----- hero: циферблат -----
+.hero {
+  display: grid; gap: 32px; align-items: center; padding: 40px max(16px, calc((100% - 1280px) / 2)) 48px; border-bottom: 1px solid var(--line);
+  background: radial-gradient(circle at 80% 40%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 55%);
+  p { max-width: 46ch; color: var(--muted); font-size: 1.1rem; margin: 18px 0 26px; }
+  @include up($bp-md) { grid-template-columns: 1.1fr .9fr; padding-block: 72px; }
+}
+.dial { width: min(380px, 80vw); justify-self: center; filter: drop-shadow(0 20px 40px #0006);
+  .bezel { fill: var(--surface); stroke: var(--line); stroke-width: 3; }
+  .tick { stroke: var(--muted); stroke-width: 1; } .tick.big { stroke: var(--text); stroke-width: 2.4; }
+  .hand { stroke: var(--text); stroke-width: 5; stroke-linecap: round; } .hand.thin { stroke-width: 3.2; }
+  .sec { stroke: var(--accent); stroke-width: 1.8; transition: transform .25s cubic-bezier(.4, 2.2, .5, 1); } .sec-dot { fill: var(--accent); }
+}
+
+// ----- каталог -----
+.tools { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
+  input, select { background: var(--surface); border: 1px solid var(--line); padding: 11px 14px; min-height: 44px; }
+  input { flex: 1 1 220px; } }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 22px; scrollbar-width: none;
+  button { white-space: nowrap; background: var(--surface); border: 1px solid var(--line); padding: 8px 18px; border-radius: 99px; cursor: pointer; &.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); } } }
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); @include up($bp-md) { grid-template-columns: repeat(3, 1fr); gap: 20px; } @include up($bp-lg) { grid-template-columns: repeat(4, 1fr); } }
+
+.card { position: relative; background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; transition: border-color .2s, transform .2s; &:hover { border-color: var(--accent); }
+  .pic { aspect-ratio: 1; background: var(--surface2); display: block; overflow: hidden; img { width: 100%; height: 100%; object-fit: cover; } }
+  .info { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; a { text-decoration: none; } .btn { margin-top: auto; } }
+  .fav { position: absolute; top: 8px; right: 8px; z-index: 2; width: 40px; height: 40px; border-radius: 50%; border: 0; background: color-mix(in srgb, var(--bg) 70%, transparent); color: var(--muted); font-size: 20px; cursor: pointer; &.on { color: var(--accent); } }
+  .badge { position: absolute; top: 8px; left: 8px; z-index: 2; background: var(--accent); color: var(--accent-ink); font-weight: 700; padding: 2px 8px; font-size: .85rem; } }
+.ph { width: 100%; height: 100%; display: grid; place-items: center; svg { width: 55%; fill: none; stroke: var(--muted); stroke-width: 2; opacity: .6; } }
+.price { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; b { font-size: 1.1rem; } s { color: var(--muted); font-size: .9rem; } &.lg b { font-size: 1.9rem; } }
+
+// ----- товар -----
+.product { display: grid; gap: 28px; @include up($bp-md) { grid-template-columns: 1fr 1fr; gap: 48px; }
+  .pic.big { aspect-ratio: 1; background: var(--surface2); border: 1px solid var(--line); overflow: hidden; img { width: 100%; height: 100%; object-fit: cover; } }
+  h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 6px 0 14px; } .price { margin-bottom: 14px; } p { margin-bottom: 12px; max-width: 60ch; } }
+.row { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+.specs { width: 100%; border-collapse: collapse; margin-top: 24px; th, td { padding: 10px 0; border-bottom: 1px solid var(--line); text-align: left; } th { color: var(--muted); font-weight: 500; width: 40%; } }
+
+// ----- корзина / формы -----
+.cart { display: grid; gap: 28px; @include up($bp-md) { grid-template-columns: 1.3fr 1fr; align-items: start; } }
+.line { display: grid; grid-template-columns: 72px 1fr auto; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); a { display: block; text-decoration: none; font-weight: 600; }
+  .pic.sm { width: 72px; height: 72px; background: var(--surface2); overflow: hidden; img { width: 100%; height: 100%; object-fit: cover; } } }
+.qty { display: flex; align-items: center; gap: 4px; button { width: 36px; height: 36px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; } span { min-width: 28px; text-align: center; } }
+.panel { background: var(--surface); border: 1px solid var(--line); padding: 18px; margin-bottom: 14px; display: grid; gap: 12px;
+  label { display: grid; gap: 6px; font-size: .92rem; color: var(--muted); &.chk { display: flex; align-items: center; gap: 8px; } }
+  input:not([type='checkbox']), textarea, select { width: 100%; background: var(--bg); border: 1px solid var(--line); padding: 11px 12px; color: var(--text); min-height: 44px; }
+  .sum { display: flex; justify-content: space-between; font-size: 1.2rem; } }
+.two { display: grid; gap: 12px; @include up($bp-md) { grid-template-columns: repeat(3, 1fr); } }
+
+// ----- админка -----
+.admin { max-width: 960px; }
+.adm-top { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: center; margin-bottom: 18px; b { font-family: 'Barlow Condensed'; font-size: 1.5rem; } .chips { margin: 0; } }
+.login { max-width: 420px; margin: 40px auto; }
+.order { .head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; } ul { padding-left: 18px; }
+  .st { width: auto; &.new { border-color: var(--accent); color: var(--accent); } &.done { color: var(--ok); } &.cancelled { color: var(--bad); } } }
+.prow { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; .row { margin: 0; } }
