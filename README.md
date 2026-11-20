@@ -25,3 +25,4 @@
 - `functions/index.js` — уведомление админу о каждом новом заказе (нужен тариф Blaze и секреты `BOT_TOKEN`, `ADMIN_CHAT_ID`).
 - Бот сможет читать `products` и писать в `orders` с `source: 'telegram'` без изменений сайта.
 # Cospet-uz
+# Cospet-uz
